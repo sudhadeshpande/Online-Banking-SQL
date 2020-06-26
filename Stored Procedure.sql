@@ -89,16 +89,23 @@ Exec p_insert_transaction 110010001113,110010001111,5500
 
 /************************procedure for transaction details ********************************/
 
-Create procedure p_transaction_details
-@ACCOUNT BIGINT
+--Create procedure p_transaction_details
+--@ACCOUNT BIGINT
+--AS 
+--BEGIN
+
+--select  DEBIT_TRANSACTION_DETAILS.*, CREDIT_TRANSACTION_DETAILS.credit_account_no, CREDIT_TRANSACTION_DETAILS.credit_amount, 
+--CREDIT_TRANSACTION_DETAILS.credit_account_balance  from DEBIT_TRANSACTION_DETAILS, CREDIT_TRANSACTION_DETAILS 
+--where debit_account_no=@ACCOUNT or credit_account_no=@ACCOUNT order by debit_id desc ;
+--END
+
+Create procedure  p_transaction_details
+(@ACCOUNT BIGINT)
 AS 
 BEGIN
-
-select  DEBIT_TRANSACTION_DETAILS.*, CREDIT_TRANSACTION_DETAILS.credit_account_no, CREDIT_TRANSACTION_DETAILS.credit_amount, 
-CREDIT_TRANSACTION_DETAILS.credit_account_balance  from DEBIT_TRANSACTION_DETAILS, CREDIT_TRANSACTION_DETAILS 
-where debit_account_no=@ACCOUNT or credit_account_no=@ACCOUNT order by credit_id desc ;
+Select * from DEBIT_TRANSACTION_DETAILS as dt  inner join CREDIT_TRANSACTION_DETAILS as ct on debit_id=credit_id
+where debit_account_no=@ACCOUNT or credit_account_no=@ACCOUNT order by debit_id  desc ;
 END
-
 
 Exec p_transaction_details 110010001111
 
@@ -106,7 +113,7 @@ Exec p_transaction_details 110010001113
 
 Exec p_transaction_details 110010001112
 
-
+drop proc p_transaction_details
 /*****************************************************Stored Procedure for Fixed Deposit Table***************************************/
 create procedure p_fixed_deposit
 @account_no bigint,
@@ -114,6 +121,7 @@ create procedure p_fixed_deposit
 @duration INT,
 @nominee varchar(10),
 @relation_with_nominee varchar(10)
+
 As 
 Begin
 	Declare @fddate date;
@@ -156,18 +164,44 @@ UPDATE ACCOUNT SET account_balance=@balance- @amount
 		RAISERROR ('YOU NEED TO KEEP MINIMUM AMOUNT OF Rs 5000',1,1);
 	END
 END
+
 Exec  p_fixed_deposit 110010001111,5000,8,'natesh','father';
+exec p_fixed_deposit 110010001112,6400,5,'shandar', 'mother';
 exec p_fixed_deposit 110010001113,9300,5,'shandar','mother';
 
 select * from ACCOUNT
 
 SELECT * FROM FIXED_DEPOSIT
 
-exec p_fixed_deposit 110010001112,6400,5,'shandar', 'mother';
+delete  FIXED_DEPOSIT
+
+drop proc p_fixed_deposit
 
 exec p_fixed_deposit 110010001113,5700,12,'mother', 'brother';
 
 exec p_fixed_deposit 110010001113,5000,3,'father', 'sister';
 
+/************************************************UPDATE CUSTOMER DETAILS*************************************/
+create procedure p_update_customer_details
+(@ID int,
+@FIRSTNAME varchar(20),
+@LASTNAME varchar(20),
+@DOB DATE,
+@AGE INT,
+@GENDER VARCHAR(10),
+@MARITAL_STATUS varchar(10),
+@ADDRESS VARCHAR(100),
+@CITY varchar(20),
+@STATE varchar(20),
+@COUNTRY varchar(20),
+@PINCODE INT,
+@PHONE BIGINT,
+@EMAIL_ID VARCHAR(50))
+AS
+BEGIN
+	UPDATE CUSTOMER SET customer_first_name=@FIRSTNAME, customer_last__name= @LASTNAME,customer_birth_date=@DOB,customer_age=@AGE,
+	marital_status=@MARITAL_STATUS,customer_address=@ADDRESS,customer_city=@CITY,customer_state=@STATE,
+	customer_country=@COUNTRY,customer_pincode=@PINCODE,customer_phone=@PHONE,customer_email_id=@EMAIL_ID WHERE customer_id=@ID;
+END
 
-
+select * from CUSTOMER 

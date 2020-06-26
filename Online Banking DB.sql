@@ -45,7 +45,7 @@ customer_password varchar(30),
 check(customer_gender in ('Male', 'Female', 'Unknown')),
 check(marital_status in ('Married', 'Unmarried'))
 );
-
+select * from CUSTOMER
 Insert into CUSTOMER 
 Values ('Shandar','md','19970625',23,'Male','unmarried','bc road','mangalore','karnataka','India',575056,8050855690,'shandar246@gmail.com','123456')
 
@@ -96,8 +96,8 @@ Select * from DEBIT_TRANSACTION_DETAILS
 
 /*************************** CREDIT TRANSACTION*****************************/
 Create Table CREDIT_TRANSACTION_DETAILS(
-debit_id int ,
-foreign key (debit_id) references DEBIT_TRANSACTION_DETAILS (debit_id),
+credit_id int ,
+foreign key (credit_id) references DEBIT_TRANSACTION_DETAILS (debit_id),
 credit_account_no bigint not null ,
 foreign key (credit_account_no) references ACCOUNT (account_no),
 credit_amount int,
@@ -106,6 +106,8 @@ credit_account_balance bigint
 );
 
 Select * from CREDIT_TRANSACTION_DETAILS
+
+drop table CREDIT_TRANSACTION_DETAILS
 
 /*********************************FIXED DEPOSIT*********************************/
 Create Table FIXED_DEPOSIT(
@@ -122,5 +124,6 @@ nominee varchar(50),
 relation_with_nominee varchar(50)
 );
 
+drop table fixed_deposit
 Select * From FIXED_DEPOSIT
 
